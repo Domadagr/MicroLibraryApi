@@ -11,13 +11,18 @@ public class ApplicationDbContext : DbContext
 
     }
     public DbSet<Book> Books { get; set; } = null!;
+    public DbSet<User> Users { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-{
-    // Configure the 'Book' entity to map to the lowercase 'books' table
-    // This tells EF Core to generate: SELECT ... FROM "books" AS b
-    modelBuilder.Entity<Book>().ToTable("books"); 
-    
-    base.OnModelCreating(modelBuilder);
-}
+    {
+        modelBuilder.Entity<Book>().ToTable("books");
+        modelBuilder.Entity<Book>().Property(b => b.Id).HasColumnName("id").IsRequired();
+        modelBuilder.Entity<Book>().Property(b => b.Title).HasColumnName("title").IsRequired();
+        modelBuilder.Entity<Book>().Property(b => b.Author).HasColumnName("author").IsRequired();
+        modelBuilder.Entity<Book>().Property(b => b.Year).HasColumnName("year").IsRequired();
+        modelBuilder.Entity<Book>().Property(b => b.Genre).HasColumnName("genre").IsRequired();
+        modelBuilder.Entity<Book>().Property(b => b.Available).HasColumnName("available").IsRequired();
+
+        base.OnModelCreating(modelBuilder);
+    }
 }
