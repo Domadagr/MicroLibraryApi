@@ -9,6 +9,15 @@ Uses Entity Framework Core with PostgreSQL for persistence.
 - Swagger UI for API testing
 - Async EF Core operations
 
+## Tech Stack
+- Language: C# (.NET 8)
+- Framework: ASP.NET Core Web API
+- ORM: Entity Framework Core (EF Core)
+- Database: PostgreSQL
+- Documentation: Swagger / Swashbuckle
+- Containerization: Docker (planned)
+- IDE: Visual Studio Code on macOS
+
 ## Endpoints
 ### Books
 - `GET /api/book` — list all books  
