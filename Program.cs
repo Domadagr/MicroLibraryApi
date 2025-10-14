@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using MicroLibraryAPI.Infrastructure.Data;
 using Microsoft.OpenApi.Models;
+using MicroLibraryAPI.Features.Books.Repositories;
+using MicroLibraryAPI.Features.Books.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +24,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<BookRepository>();
+builder.Services.AddScoped<BookService>();
 
 var app = builder.Build();
 

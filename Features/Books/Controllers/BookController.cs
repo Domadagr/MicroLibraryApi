@@ -1,5 +1,6 @@
 using MicroLibraryAPI.Models;
 using MicroLibraryAPI.Infrastructure.Data;
+using MicroLibraryAPI.Features.Books.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,22 +10,20 @@ namespace MicroLibraryAPI.Features.Books;
 [Route("api/[controller]")]
 public class BookController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
-    public BookController(ApplicationDbContext context)
+    private readonly BookService _bookService;
+    public BookController(BookService bookService)
     {
-        _context = context;
+        _bookService = bookService;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
-    {
-        return await _context.Books.ToListAsync();
-    }
+        => Ok(await _bookService.GetBooks());
 
     [HttpGet("{Id}")]
     public async Task<ActionResult<Book>> GetBook(int id)
     {
-        var book = await _context.Books.FindAsync(id);
+        var book = await _bookService.GetBook(id);
 
         if (book == null)
         {
@@ -37,8 +36,7 @@ public class BookController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Book>> PostBooks(Book book)
     {
-        _context.Books.Add(book);
-        await _context.SaveChangesAsync();
+        await _bookService.PostBook(book);
 
         return CreatedAtAction(nameof(GetBook), new { id = book.Id }, book);
     }
@@ -46,36 +44,23 @@ public class BookController : ControllerBase
     [HttpPut("{Id}")]
     public async Task<IActionResult> PutBook(int id, Book bookUpdate)
     {
-        var book = await _context.Books.FindAsync(id);
-
+        var book = _bookService.PutBook(id, bookUpdate);
         if (book == null)
         {
             return NotFound();
         }
-
-        book.Title = bookUpdate.Title;
-        book.Author = bookUpdate.Author;
-        book.Year = bookUpdate.Year;
-        book.Genre = bookUpdate.Genre;
-        book.Available = bookUpdate.Available;
-
-        await _context.SaveChangesAsync();
-
         return NoContent();
     }
 
     [HttpDelete("{Id}")]
     public async Task<IActionResult> DeleteBook(int id)
     {
-        var book = await _context.Books.FindAsync(id);
+        var book = await _bookService.DeleteBook(id);
 
-        if (book == null)
+        if (!book)
         {
             return NotFound();
         }
-
-        _context.Books.Remove(book);
-        await _context.SaveChangesAsync();
 
         return NoContent();
     }
