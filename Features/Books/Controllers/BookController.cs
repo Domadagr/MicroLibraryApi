@@ -44,7 +44,7 @@ public class BookController : ControllerBase
     [HttpPut("{Id}")]
     public async Task<IActionResult> PutBook(int id, Book bookUpdate)
     {
-        var book = _bookService.PutBook(id, bookUpdate);
+        var book = await _bookService.PutBook(id, bookUpdate);
         if (book == null)
         {
             return NotFound();
