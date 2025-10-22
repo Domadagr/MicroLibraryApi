@@ -1,7 +1,5 @@
 using MicroLibraryAPI.Models;
-using MicroLibraryAPI.Infrastructure.Data;
 using MicroLibraryAPI.Features.Books.Services;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MicroLibraryAPI.Features.Books;
@@ -57,7 +55,7 @@ public class BookController : ControllerBase
     {
         var book = await _bookService.DeleteBook(id);
 
-        if (!book)
+        if (book == null)
         {
             return NotFound();
         }

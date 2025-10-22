@@ -51,19 +51,19 @@ public class BookRepository
         return book;
     }
 
-    public async Task<bool> DeleteBook(int id)
+    public async Task<Book?> DeleteBook(int id)
     {
         var book = await _context.Books.FindAsync(id);
 
         if (book == null)
         {
-            return false;
+            return null;
         }
 
         _context.Books.Remove(book);
         await _context.SaveChangesAsync();
 
-        return true;
+        return book;
         
     }
 }

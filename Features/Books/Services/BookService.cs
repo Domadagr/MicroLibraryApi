@@ -32,7 +32,7 @@ public class BookService
         return await _bookRepository.PutBook(id, bookUpdate);
     }
 
-    public async Task<bool> DeleteBook(int id)
+    public async Task<Book?> DeleteBook(int id)
     {
         return await _bookRepository.DeleteBook(id);
     }

@@ -1,5 +1,3 @@
-using MicroLibraryAPI.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using MicroLibraryAPI.Features.Users.Services;
 
@@ -58,7 +56,7 @@ public class UserController : ControllerBase
     {
         var user = await _userService.DeleteUser(id);
 
-        if (user == false)
+        if (user == null)
         {
             return NotFound();
         }

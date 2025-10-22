@@ -32,7 +32,7 @@ public class UserService
         return await _userRepository.PutUser(id, user);
     }
 
-    public async Task<bool> DeleteUser(int id)
+    public async Task<User?> DeleteUser(int id)
     {
         return await _userRepository.DeleteUser(id);
     }

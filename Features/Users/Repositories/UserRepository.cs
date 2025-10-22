@@ -1,5 +1,4 @@
 using MicroLibraryAPI.Infrastructure.Data;
-using MicroLibraryAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace MicroLibraryAPI.Features.Users.Repositories;
@@ -48,18 +47,18 @@ public class UserRepository
         return user;
     }
 
-    public async Task<bool> DeleteUser(int id)
+    public async Task<User?> DeleteUser(int id)
     {
         var user = await _context.Users.FindAsync(id);
 
         if (user == null)
         {
-            return false;
+            return null;
         }
 
         _context.Users.Remove(user);
         await _context.SaveChangesAsync();
 
-        return true;
+        return user;
     }
 }
