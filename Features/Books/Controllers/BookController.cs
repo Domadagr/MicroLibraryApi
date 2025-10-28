@@ -1,6 +1,7 @@
 using MicroLibraryAPI.Models;
 using MicroLibraryAPI.Features.Books.Services;
 using Microsoft.AspNetCore.Mvc;
+using MicroLibraryAPI.Features.Books.DTOs;
 
 namespace MicroLibraryAPI.Features.Books;
 
@@ -15,31 +16,35 @@ public class BookController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
+    public async Task<ActionResult<IEnumerable<BookDto>>> GetBooks()
         => Ok(await _bookService.GetBooks());
 
-    [HttpGet("{Id}")]
-    public async Task<ActionResult<Book>> GetBook(int id)
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<BookDto>> GetBook(int id)
     {
         var book = await _bookService.GetBook(id);
 
         if (book == null)
         {
-            return NotFound();
+            return NoContent();
         }
-
-        return book;
+        return Ok(new BookDto(book));
     }
 
     [HttpPost]
-    public async Task<ActionResult<Book>> PostBooks(Book book)
+    public async Task<ActionResult<Book>> PostBook(Book book)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
         await _bookService.PostBook(book);
-
         return CreatedAtAction(nameof(GetBook), new { id = book.Id }, book);
+
     }
 
-    [HttpPut("{Id}")]
+    [HttpPut("{id}")]
     public async Task<IActionResult> PutBook(int id, Book bookUpdate)
     {
         var book = await _bookService.PutBook(id, bookUpdate);
@@ -50,7 +55,7 @@ public class BookController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{Id}")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteBook(int id)
     {
         var book = await _bookService.DeleteBook(id);
