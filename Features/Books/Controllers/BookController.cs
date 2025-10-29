@@ -33,20 +33,39 @@ public class BookController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<Book>> PostBook(Book book)
+    public async Task<ActionResult<BookDto>> PostBook(CreateBookDto createbookdto)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
+
+        var book = new Book
+        {
+            Title = createbookdto.Title,
+            Author = createbookdto.Author,
+            Year = createbookdto.Year,
+            Genre = createbookdto.Genre,
+            Available = true,
+        };
+
         await _bookService.PostBook(book);
-        return CreatedAtAction(nameof(GetBook), new { id = book.Id }, book);
+        return CreatedAtAction(nameof(GetBook), new { id = book.Id }, new BookDto(book));
 
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutBook(int id, Book bookUpdate)
+    public async Task<IActionResult> PutBook(int id, CreateBookDto createbookdto)
     {
+        var bookUpdate = new Book
+        {
+            Title = createbookdto.Title,
+            Author = createbookdto.Author,
+            Year = createbookdto.Year,
+            Genre = createbookdto.Genre,
+            Available = createbookdto.Available,
+        };
+
         var book = await _bookService.PutBook(id, bookUpdate);
         if (book == null)
         {

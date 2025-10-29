@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MicroLibraryAPI.Features.Users.Services;
-
+using MicroLibraryAPI.Features.Users.DTOs;
 
 namespace MicroLibraryAPI.Features.Users.Controllers;
 
@@ -17,31 +17,48 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<User>>> GetUsers()    
+    public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()    
         => Ok(await _userService.GetUsers());
     
 
-    [HttpGet("{Id}")]
-    public async Task<ActionResult<User>> GetUser(int id)
+    [HttpGet("{id}")]
+    public async Task<ActionResult<UserDto>> GetUser(int id)
     {
         var user = await _userService.GetUser(id);
         if (user == null)
         {
             return NotFound();
         }
-        return user;
+        return Ok(new UserDto(user));
     }
 
     [HttpPost]
-    public async Task<ActionResult<User>> PostUser(User user)
+    public async Task<ActionResult<UserDto>> PostUser(CreateUserDto createuserdto)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var user = new User
+        {
+            Email = createuserdto.Email,
+            Password = createuserdto.Password,
+            UserType = createuserdto.UserType,
+        };
+
         await _userService.PostUser(user);
-        return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
+        return CreatedAtAction(nameof(GetUser), new { id = user.Id }, new UserDto(user));
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutUser(int id, User userUpdate)
+    public async Task<IActionResult> PutUser(int id, CreateUserDto createuserdto)
     {
+        //minimal implementation, pending JWT for full implementation.
+        var userUpdate = new User
+        {
+            Email = createuserdto.Email,
+        };
         var user = await _userService.PutUser(id, userUpdate);
 
         if (user == null)
